@@ -2,41 +2,37 @@ package main
 
 import (
 	"fmt"
-	"strings"
 	"os"
-	
+	"strings"
+	"reloaded/functions"
 )
 
 func main() {
-	// grab arguments from the command line
-	   args := os.Args[1:]
+	args := os.Args[1:]
 
-	   inputtext := args[0]
-
-	   words, err := os.ReadFile(inputtext)
-	   if err != nil {
-		  fmt.Println("Error reading file")
-		  return
-	   }
-	   content := strings.Split(string(words), " ")
-	   capitalized := CapitalizeAll(content)
-	   fmt.Println(capitalized)
-	// Write to file
-	//    os.WriteFile(args[1], []byte(word), 0644)
-
-}
-
-func CapitalizeAll(content []string) string {
-	for i := 0; i < len(content); i++ {
-		if content[i] == "(cap)" && i > 0 {
-			prevWord := content[i-1]
-			if len(prevWord) > 0 {
-				// Capitalize the first letter of the previous word
-				firstChar := strings.ToUpper(string(prevWord[0]))
-				prevWord = firstChar + prevWord[1:]
-				content[i-1] = prevWord
-			}
-		}
+	if len(args) < 1 {
+		fmt.Println("Usage: <sample.txt> <result.txt>")
+		return
 	}
-	return strings.Join(content, " ")
+
+	inputtext := args[0]
+
+	content, err := os.ReadFile(inputtext)
+	if err != nil {
+		fmt.Println("Error reading file")
+		return
+	}
+
+	words := strings.Split(string(content), " ")
+
+	contents := functions.Capitalize(strings.Split(functions.Upper(words), " "))
+
+
+	output := os.WriteFile(args[1], []byte(contents),0644)
+
+	if output != nil {
+		fmt.Println("err", output)
+	}
 }
+
+
